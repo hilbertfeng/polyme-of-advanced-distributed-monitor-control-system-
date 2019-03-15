@@ -1,0 +1,6 @@
+ErrorTime : 2019-01-24 00:19:09
+ErrorData : Error 111 connecting to 192.168.1.102:6379. Connection refused.
+##############################
+ErrorTime : 2019-01-24 15:19:27
+ErrorData : Error 111 connecting to 172.40.78.105:6379. Connection refused.
+##############################

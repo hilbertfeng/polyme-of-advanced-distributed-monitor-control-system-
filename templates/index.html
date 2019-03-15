@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Advanced Distribute of polymer system</title>
+    <meta charset="'UTF-8">
+    <meta http-equiv="refresh" content="3">
+    <link rel="stylesheet" href="../static/bootstrap3.3/css/bootstrap.min.css">
+    <!-- chose bootstrap subject file (common is not need include) -->
+    <link rel="stylesheet" href="../static/bootstrap3.3/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../static/bootstrap3.3/css/justified-nav.css">
+    <!-- jQuery file . must in bootstrap.min.js before include -->
+    <script src="../static/bootstrap3.3/js/jquery-3.1.1.min.js"></script>
+    <!-- newest Boostrap core JavaScript -->
+    <script src="../static/bootstrap3.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container"></div>
+<h2 class="text-center">Welcome to login in Advanced Distribute system</h2>
+<div class="container">
+    <div class="masthead">
+        <h3 class="text-muted">RTask distribute task monitor control system</h3><br>
+        <ul class="nav nav-justified">
+            <li class="active"><a href="{{ url_for('index') }}">Task Queue</a></li>
+            <li><a href="{{ url_for('node_stop') }}">Worker Node</a></li>
+            <li><a href="{{ url_for('worker_lists') }}">Run progress</a></li>
+            <li><a href="{{ url_for('redis_list') }}">Redis status</a></li>
+        </ul>
+    </div>
+    <br>
+    <div>
+        <table class="table table-hover table-striped table-bordered" style="text-align: center;">
+            <tr id="ids">
+                <td class="info">{{ task_name }} Task Queue</td>
+                <td class="info">{{ taskid_count }}</td>
+            </tr>
+            <tr id="fails">
+                <td clas="danger">{{ task_name }}Fail Queue</td>
+                <td clas="danger">{{ taskfail_counts }}</td>
+            </tr>
+        </table>
+    </div>
+    <form class="form-inline" style="width:100%">
+        <div class="form-group">
+            <input type="text" class="form-control" name="taskid" id="taskid" placeholder="Add task" style="float:left">
+        </div>
+        <button type="button" class="btn btn-info" id="addtask" style="float:left;margin-left:100px;width:120px;">Add task</button>
+        <button type="button" class="button" class="btn btn-danger" style="float:left; margin-left:100px;width:120px;" data-toggle="modal"
+        data-target="#myModal">Clear Queue</button>
+    </form>
+</div>
+<br>
+
+<table class="table table-hover table-striped table-bordered" style="text-align:center">
+    {% for taskid in taskid_range %}
+    <tr>
+        <td>{{ taskid }}</td>
+        <td><a href="{{ url_for('taskid_first') }}?taskid={{ taskid }}" styel="text-decoration:none; color:#31b0d5">Move up</a></td>
+        <td><a href="{{ url_for('taskid_last') }}?taskid={{ taskid }}" style="text-decoration:none; color:#e38d13">Move down</a></td>
+        <td><a href="{{ url_for('taskid_delete') }}?taskid={{ taskid }}" style="text-decoration:none;color:red">Delete</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    <h4 class="modal-title" id="myModalLabel">Clear Queue</h4>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h3 style="color:red" class="glyphicon glyphicon-warning-sign">&nbsp; whether Clear queue?</h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info" data-dismiss="modal" style="width:100px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function() {
+        $("#ids").click(function() {
+            window.localtion = "/index?name=ids";
+     });
+
+    $("#fails").click(function(){
+       window.location = "/index?name=fails";
+    });
+
+    $("#addtask").click(function () {
+        taskid = $("#taskid").val()
+        $.ajax({
+            type: "POST",
+            url: "{{ url_for('add_task') }}",
+            data: {'taskid':taskid},
+            dataType:"html",
+            cache:false,
+            success: function(a){
+                window.location = "{{ url_for('index') }}";
+            }
+        });
+    });
+    $("#emptytask").click(function () {
+        window.location = "{{ url_for('empty_task') }}"
+      })
+
+     });
+
+</script>
+</body>
+</html>
